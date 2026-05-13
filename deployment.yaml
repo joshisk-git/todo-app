@@ -1,0 +1,40 @@
+# 1. Tells Kubernetes which version of the API to use for this object
+apiVersion: apps/v1
+
+# 2. Defines the type of resource (A Deployment manages a set of Pods)
+kind: Deployment
+
+# 3. Basic identification info for this deployment
+metadata:
+  name: todo-app
+
+# 4. Defines the "Desired State" (How you want the app to behave)
+spec:
+  # 5. Tells K8s to keep exactly 2 copies of your app running at all times
+  replicas: 2
+
+  # 6. The "Search Filter" the manager uses to find its assigned Pods
+  selector:
+    matchLabels:
+      app: todo-app
+
+  # 7. The Blueprint for the Pods themselves (The "Template")
+  template:
+    metadata:
+      # 8. The "Tags" (Labels) attached to the Pods so the selector can find them
+      labels:
+        app: todo-app
+    
+    # 9. The actual container details (The "Package" inside the Pod)
+    spec:
+      containers:
+      - name: todo-app
+        # 10. The DockerHub image we built and pushed earlier
+        image: joshisk/todo-app:v1
+        
+        # 11. Forces K8s to re-download the image every time a Pod starts
+        imagePullPolicy: Always
+        
+        # 12. The internal port the container is listening on (Matches Dockerfile)
+        ports:
+        - containerPort: 8000

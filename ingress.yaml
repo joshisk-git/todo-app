@@ -1,0 +1,33 @@
+# 1. The standard API for networking and routing in K8s
+apiVersion: networking.k8s.io/v1
+
+# 2. Defines this as an Ingress (External-to-Internal routing)
+kind: Ingress
+
+# 3. The name of this routing rule
+metadata:
+  name: todo-ingress
+
+# 4. The Specific Configuration (The Routing Logic)
+spec:
+  # 5. Tells K8s to use the "Traefik" controller to handle this traffic
+  ingressClassName: traefik
+
+  # 6. The list of domain-based rules
+  rules:
+  # 7. The specific URL/Domain you want to type into your browser
+  - host: shree.todo
+    http:
+      paths:
+      # 8. Defines the URL path ( "/" means all traffic starting from the homepage)
+      - path: /
+        pathType: Prefix
+        
+        # 9. The Destination (Where the receptionist sends the visitor)
+        backend:
+          service:
+            # 10. Sends traffic to the service we created earlier
+            name: todo-service
+            port:
+              # 11. Uses the internal service port (Port 80)
+              number: 80

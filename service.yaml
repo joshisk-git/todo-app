@@ -1,0 +1,29 @@
+# 1. Standard API version for Service resources
+apiVersion: v1
+
+# 2. Defines this as a Service (an internal load balancer)
+kind: Service
+
+# 3. The name other parts of the cluster use to talk to this service
+metadata:
+  name: todo-service
+
+# 4. The Networking Logic
+spec:
+  # 5. Exposes the app on a specific port on EVERY Worker VM's IP address
+  type: NodePort
+
+  # 6. Tells the service: "Send traffic only to Pods with the label 'app: todo-app'"
+  selector:
+    app: todo-app
+
+  # 7. Port Mapping (The "Traffic Tunnel")
+  ports:
+    - # 8. The port the service uses internally within the cluster
+      port: 80
+
+      # 9. The port inside your container (Must match your Dockerfile EXPOSE)
+      targetPort: 8000
+
+      # 10. The port you type into your browser to see the app
+      nodePort: 30007
