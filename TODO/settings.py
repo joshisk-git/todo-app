@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-2bdci^5-ftikow_89r9t$7##yrcorvp-110@5ql0@_dd(aeyd^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['shree.todo', 'localhost', '127.0.0.1', '*']
 
 # Application definition
 
