@@ -1,40 +1,51 @@
-# 1. Tells Kubernetes which version of the API to use for this object
+# --- DEPLOYMENT SECTION ---
 apiVersion: apps/v1
-
-# 2. Defines the type of resource (A Deployment manages a set of Pods)
 kind: Deployment
-
-# 3. Basic identification info for this deployment
 metadata:
   name: todo-app
-
-# 4. Defines the "Desired State" (How you want the app to behave)
 spec:
-  # 5. Tells K8s to keep exactly 2 copies of your app running at all times
   replicas: 2
-
-  # 6. The "Search Filter" the manager uses to find its assigned Pods
   selector:
     matchLabels:
       app: todo-app
-
-  # 7. The Blueprint for the Pods themselves (The "Template")
   template:
     metadata:
-      # 8. The "Tags" (Labels) attached to the Pods so the selector can find them
       labels:
         app: todo-app
-    
-    # 9. The actual container details (The "Package" inside the Pod)
     spec:
       containers:
       - name: todo-app
-        # 10. The DockerHub image we built and pushed earlier
         image: joshisk/todo-app:v1
-        
-        # 11. Forces K8s to re-download the image every time a Pod starts
         imagePullPolicy: Always
-        
-        # 12. The internal port the container is listening on (Matches Dockerfile)
         ports:
         - containerPort: 8000
+        # 1. Links the virtual disk to a specific folder inside the container
+        volumeMounts:
+        - name: db-storage
+          # 2. The exact location where your Django/Python app looks for the DB
+          mountPath: /app/db.sqlite3
+          # 3. Mounts only the file, preventing the whole /app folder from being overwritten
+          subPath: db.sqlite3
+      
+      # 4. Defines the "Plug" that connects the container to the storage
+      volumes:
+      - name: db-storage
+        # 5. Tells the Volume to get its space from the Claim defined below
+        persistentVolumeClaim:
+          claimName: todo-pvc
+
+---
+# --- STORAGE CLAIM SECTION ---
+# 6. Requests a specific piece of "Hard Drive" space from the cluster
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: todo-pvc
+spec:
+  # 7. Allows the storage to be used by one node at a time for writing
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      # 8. Asks for 1 Gigabyte of space for your database
+      storage: 1Gi
