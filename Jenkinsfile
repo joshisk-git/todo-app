@@ -33,9 +33,10 @@ pipeline {
 
         // 6. Runs the container locally on the Jenkins server to ensure it doesn't crash
         stage('Run Container Test') {
-            steps {
-                sh 'docker run -d -p 8000:8000 joshisk/todo-app:v1'
-            }
+ 	   steps {
+ 	       sh 'docker rm -f todo-container || true'
+       	       sh 'docker run -d -p 8000:8000 --name todo-container joshisk/todo-app:v1'
+    	   }
         }
 
         // 7. Tells your Kubernetes Master to update the cluster with your new code
