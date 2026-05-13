@@ -34,7 +34,7 @@ pipeline {
         // 6. Runs the container locally on the Jenkins server to ensure it doesn't crash
         stage('Run Container Test') {
  	   steps {
- 	       sh 'docker rm -f todo-container || true'
+ 	       sh 'docker rm -f $(docker ps -aq) || true'
        	       sh 'docker run -d -p 8000:8000 --name todo-container joshisk/todo-app:v1'
     	   }
         }
