@@ -30,7 +30,7 @@ spec:
       containers:
       - name: todo-app
         # 10. The Docker image built by your Jenkins pipeline
-        image: joshisk/todo-app:v1
+        image: joshisk/todo-app:v2
         
         # 11. Forces the worker node to download the image every time a Pod starts
         imagePullPolicy: Always

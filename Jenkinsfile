@@ -19,7 +19,7 @@ pipeline {
         // 4. Uses the Dockerfile we just looked at to create the "v1" image
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t joshisk/todo-app:v1 .'
+                sh 'docker build -t joshisk/todo-app:v2 .'
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'docker push joshisk/todo-app:v1'
+                sh 'docker push joshisk/todo-app:v2'
             }
         }
 
@@ -35,7 +35,7 @@ pipeline {
         stage('Run Container Test') {
  	   steps {
  	       sh 'docker rm -f $(docker ps -aq) || true'
-       	       sh 'docker run -d -p 8000:8000 --name todo-container joshisk/todo-app:v1'
+       	       sh 'docker run -d -p 8000:8000 --name todo-container joshisk/todo-app:v2'
     	   }
         }
 
