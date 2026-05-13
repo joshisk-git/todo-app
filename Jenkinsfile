@@ -41,11 +41,14 @@ pipeline {
 
         // 7. Tells your Kubernetes Master to update the cluster with your new code
         stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
-                sh 'kubectl apply -f ingress.yaml'
-            }
-        }
+ 	   steps {
+       		sh 'kubectl apply -f postgres-pvc.yaml'
+        	sh 'kubectl apply -f postgres-deployment.yaml'
+        	sh 'kubectl apply -f postgres-service.yaml'
+        	sh 'kubectl apply -f deployment.yaml'
+        	sh 'kubectl apply -f service.yaml'
+        	sh 'kubectl apply -f ingress.yaml'
+   	   }
+	}
     }
 }

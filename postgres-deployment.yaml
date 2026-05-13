@@ -1,0 +1,61 @@
+# 1. Standard API version for managing applications
+apiVersion: apps/v1
+
+# 2. Defines this as a Deployment (handles scaling and updates)
+kind: Deployment
+
+# 3. The name of the deployment (Used by 'kubectl get deployment')
+metadata:
+  name: postgres
+
+# 4. The operational settings for the database
+spec:
+  # 5. Set to 1 because standard databases cannot easily share the same storage
+  replicas: 1
+
+  # 6. The selector used to track the database Pods
+  selector:
+    matchLabels:
+      app: postgres
+
+  # 7. The blueprint for the database Pod
+  template:
+    metadata:
+      # 8. Nametag for the Pod so the selector can find it
+      labels:
+        app: postgres
+    
+    # 9. Specification for the Postgres container
+    spec:
+      containers:
+      - name: postgres
+        # 10. Uses version 15 of the official PostgreSQL image from DockerHub
+        image: postgres:15
+        
+        # 11. The standard port for PostgreSQL communication
+        ports:
+        - containerPort: 5432
+        
+        # 12. Initialization variables (These MUST match your todo-app config)
+        env:
+        - name: POSTGRES_DB
+          value: "tododb"        # Creates this database on first startup
+        - name: POSTGRES_USER
+          # Matches the DB_USER in your todo-app deployment
+          value: "todouser"      
+        - name: POSTGRES_PASSWORD
+          # Matches the DB_PASSWORD in your todo-app deployment
+          value: "todopassword"  
+
+        # 13. The "Internal Plumbing" (Mapping the disk to the software)
+        volumeMounts:
+        - name: postgres-storage
+          # 14. The exact folder where Postgres saves all tables and data
+          mountPath: /var/lib/postgresql/data
+
+      # 15. The "External Plumbing" (Defining the disk source)
+      volumes:
+      - name: postgres-storage
+        # 16. Links this deployment to the 1GB 'postgres-pvc' we created
+        persistentVolumeClaim:
+          claimName: postgres-pvc

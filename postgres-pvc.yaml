@@ -1,0 +1,22 @@
+# 1. Specifies the core Kubernetes API version
+apiVersion: v1
+
+# 2. Defines the type of object—a request for a piece of persistent storage
+kind: PersistentVolumeClaim
+
+# 3. Metadata to identify this claim (The name must match what the Postgres Deployment asks for)
+metadata:
+  name: postgres-pvc
+
+# 4. The 'Shopping List' for the storage you want
+spec:
+  # 5. Defines how the storage can be used
+  accessModes:
+    # 6. 'ReadWriteOnce' (RWO) means the disk can be mounted to one worker node at a time
+    - ReadWriteOnce
+
+  # 7. Defines the physical size of the storage
+  resources:
+    requests:
+      # 8. Requests 1 Gigabyte of space for your PostgreSQL data
+      storage: 1Gi

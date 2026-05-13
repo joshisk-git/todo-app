@@ -1,0 +1,23 @@
+# 1. Specifies the standard version for Kubernetes networking resources
+apiVersion: v1
+
+# 2. Defines this as a Service (an internal load balancer/DNS entry)
+kind: Service
+
+# 3. The most important line: This is the 'Domain Name' used by the todo-app
+metadata:
+  name: postgres-service
+
+# 4. Defines the routing rules
+spec:
+  # 5. Tells the service: "Send traffic to any Pod with the label 'app: postgres'"
+  selector:
+    app: postgres
+
+  # 6. Port configuration (The 'Entry' and 'Exit' for traffic)
+  ports:
+    - # 7. The port other apps (like the todo-app) use to talk to this service
+      port: 5432
+
+      # 8. The actual port the Postgres software is listening on inside the Pod
+      targetPort: 5432
